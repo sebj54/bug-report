@@ -42,4 +42,19 @@ class MorphToTest extends TestCase
             'boolean' => 'and',
         ], $wheres);
     }
+
+    public function test_morph_to_can_user_power_join(): void
+    {
+        $post = Post::factory()->create();
+
+        $image = Image::factory()
+            ->for($post, 'imageable')
+            ->create();
+
+        $results = Image::joinRelationship('imageable', morphable: Post::class)
+            ->get();
+
+        $this->assertCount(1, $results);
+        $this->assertTrue($results->contains($image));
+    }
 }
